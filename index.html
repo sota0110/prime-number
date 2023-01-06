@@ -18,8 +18,10 @@
             <input class="input" id="typeForm" type="number" v-model="typeBox" v-if="startResult!=true"><br>
             <button v-if="startResult!=true" @click="judge" class="judgeButton">判定</button>
             <div v-if="startResult" class="result">
-                <p v-if="judgePrime">おめでとうございます！！！<br>{{ typeBox }}は素数です！</p>
-                <p v-if="judgePrime!=true">残念ですが<br>{{ typeBox }}は素数ではありません。</p>
+                <p v-if="error">自然数を入力してください。</p>
+                <p v-else-if="gro">引っかかりましたね！<br>{{ typeBox }}はグロタンディーク素数です！</p>
+                <p v-else-if="judgePrime">おめでとうございます！！！<br>{{ typeBox }}は素数です！</p>
+                <p v-else-if="judgePrime!=true">残念ですが<br>{{ typeBox }}は素数ではありません。</p>
                 <br><button @click="restart" class="btn">もう一度</button>
             </div>
         </div>
@@ -32,6 +34,8 @@
                 judgePrime:"",
                 startResult:"",
                 typeBox:"",
+                gro:"",
+                error:""
             },
             methods:{
                 judge:function(){
@@ -47,6 +51,8 @@
                     this.startResult=""
                     this.typeBox=""
                     this.judgePrime=""
+                    this.gro=""
+                    this.error=""
                     this.$nextTick(function(){
                         document.getElementById('typeForm').focus()
                     })
@@ -54,8 +60,18 @@
             },
             watch:{
                 typeBox:function(e){
-                    if(e==1){
+                    this.startResult=""
+                    this.judgePrime=""
+                    this.gro=""
+                    this.error=""
+                    if(e<=0){
+                        this.error=true
+                    }else if(e==1){
                         this.judgePrime=""
+                    }else if(e==2||e==3){
+                        this.judgePrime=true
+                    }else if(e==57){
+                        this.gro=true
                     }else{
                         for(i=2; i*i<=e; i++){
                             if(e%i==0){
